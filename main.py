@@ -3,11 +3,14 @@
 import http.client
 from html.parser import HTMLParser
 import sys
+import urllib.request
 
 # host = '192.168.42.1'
 host = '192.168.42.1'
 run_continuously = True
 desired_extensions = ['jpg', 'jpeg'] # Capitalization ignored
+download_dir = "/home/alessandro/Desktop/camera_grabber/"
+
 
 class MyHTMLParser(HTMLParser):
     def __init__(self):
@@ -68,11 +71,27 @@ while(run_continuously):
         links = get_all_links(host, d)
         print(links)
         for l in links:
-            # 
+            # Filter links
+            # TODO: Check file extension against our whitelist
+
+
+            file_url = "http://" + host + d + l
 
             # TODO: Does this need additional slashes?
-            print("Downloading image " + host + d + l)
+            print("Downloading file " + file_url)
+
             # TODO: Download images to specified directory 
+            with urllib.request.urlopen(file_url) as response:
+                downloaded_data = response.read()
+                F = open("download", 'w')
+
+                 # TODO: Is this the right way to write binary data?
+                 # ... it does not work like this...
+                F.write(str(downloaded_data))
+                F.close()
+                exit()
+
+
 
     # TODO: Sleep for some seconds
 
