@@ -83,11 +83,11 @@ while(run_continuously):
             # TODO: Download images to specified directory 
             with urllib.request.urlopen(file_url) as response:
                 downloaded_data = response.read()
-                F = open("download", 'w')
+                F = open("download", 'w+b')
 
                  # TODO: Is this the right way to write binary data?
                  # ... it does not work like this...
-                F.write(str(downloaded_data))
+                F.write(downloaded_data)
                 F.close()
                 exit()
 
