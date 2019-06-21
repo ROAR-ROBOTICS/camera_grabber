@@ -2,8 +2,9 @@
 
 import http.client
 from html.parser import HTMLParser
-import sys
+# import sys
 import urllib.request
+import os.path
 
 # host = '192.168.42.1'
 host = '192.168.42.1'
@@ -71,25 +72,37 @@ while(run_continuously):
         links = get_all_links(host, d)
         print(links)
         for l in links:
+            # Check if file already exists
+            fname = download_dir + d + l
+            if os.path.isfile(fname):
+                print("file " + fname + " already exists. Skipping download.")
+                continue
+
+
             # Filter links
             # TODO: Check file extension against our whitelist
+            if "mp4" in l: # Skip mp4 for testing only
+                print("Skipping " + l)
+                continue
 
 
             file_url = "http://" + host + d + l
 
-            # TODO: Does this need additional slashes?
             print("Downloading file " + file_url)
 
             # TODO: Download images to specified directory 
             with urllib.request.urlopen(file_url) as response:
+                # TODO: Create Download directory
+
                 downloaded_data = response.read()
-                F = open("download", 'w+b')
+                F = open(fname, 'w+b')
 
                  # TODO: Is this the right way to write binary data?
                  # ... it does not work like this...
                 F.write(downloaded_data)
                 F.close()
-                exit()
+                # exit()
+                # break
 
 
 
