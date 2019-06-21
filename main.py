@@ -1,5 +1,6 @@
 #!/usr/bin/env python3  
 
+import time
 import http.client
 from html.parser import HTMLParser
 # import sys
@@ -107,5 +108,5 @@ while(run_continuously):
 
 
     # TODO: Sleep for some seconds
-
-    exit()
+    print("Done - Sleeping for 5 seconds")
+    time.sleep(5)
