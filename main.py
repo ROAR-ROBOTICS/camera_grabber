@@ -4,12 +4,13 @@ import http.client
 from html.parser import HTMLParser
 import sys
 
-link = '192.168.42.1/179E90HD'
+# link = '192.168.42.1'
+link = '192.168.42.1'
 
 class MyHTMLParser(HTMLParser):
     def __init__(self):
         # self.parsing_link = False
-        self.links = []
+        self.rel_links = []
         HTMLParser.__init__(self)
 
     def handle_starttag(self, tag, attrs):
@@ -20,9 +21,9 @@ class MyHTMLParser(HTMLParser):
                 if attrs[0][1] == '../':
                     return
 
-                full_link = link + '/' + str(attrs[0][1])
+                # full_link = link + )
                 # print(full_link)
-                self.links.append(full_link)
+            self.rel_links.append('/' + str(attrs[0][1]))
 
     def handle_endtag(self, tag):
         # if tag == 'a':
@@ -33,13 +34,15 @@ class MyHTMLParser(HTMLParser):
         # if self.parsing_link:
         print("Encountered some data  :", data)
 
-def get_all_links(link):
+def get_all_links(host, directory):
     conn = http.client.HTTPConnection(link)
-    conn.request("GET","/")
+    conn.request("GET", directory)
     r = conn.getresponse()
     print(r.status, r.reason)
 
+    # Check HTTP response (Code 200 means OK)
     if r.status != 200:
+        # TODO: Handle gracefully
         print("Error connecting to camera")
         exit()
 
@@ -48,16 +51,21 @@ def get_all_links(link):
 
     parser = MyHTMLParser()
     parser.feed(data)
-    return parser.links
+    return parser.rel_links
 
-directories = get_all_links(link)
+## Get all directories from index site
+# directories = get_all_links(link, "/226E50HD/")
+directories = get_all_links(link, "/")
 print("Directories:")
 print(directories)
 
 for d in directories:
-    print(d)
-    # links = get_all_links(d)
-    # print(links)
+    print("Fetching directory " + d)
+    links = get_all_links(d)
+    print(links)
+
+
+
     # conn = http.client.HTTPConnection(d)
     # conn.request("GET","/")
     # r1 = conn.getresponse()
