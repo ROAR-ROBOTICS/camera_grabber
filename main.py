@@ -1,6 +1,7 @@
 #!/usr/bin/env python3  
 
 import time
+import os
 import http.client
 from html.parser import HTMLParser
 # import sys
@@ -89,11 +90,13 @@ while(run_continuously):
 
             file_url = "http://" + host + d + l
 
-            print("Downloading file " + file_url)
+            print("Downloading file " + file_url + "to " + fname)
 
             # TODO: Download images to specified directory 
             with urllib.request.urlopen(file_url) as response:
-                # TODO: Create Download directory
+                # Create target download directory if necessary
+                if not os.path.exists(download_dir + d):
+                    os.makedirs(download_dir + d)
 
                 downloaded_data = response.read()
                 F = open(fname, 'w+b')
