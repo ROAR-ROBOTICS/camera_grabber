@@ -43,10 +43,10 @@ def get_all_links(host, directory):
     conn = http.client.HTTPConnection(host)
     conn.request("GET", directory)
     r = conn.getresponse()
-    print(r.status, r.reason)
 
     # Check HTTP response (Code 200 means OK)
     if r.status != 200:
+        print("HTTP error: ", r.status, r.reason)
         return None
 
     data = r.read()
@@ -58,21 +58,20 @@ def get_all_links(host, directory):
 
 while(run_continuously):
     ## Get all directories from index site
-    # directories = get_all_links(link, "/226E50HD/")
     directories = get_all_links(host, "/")
 
     if directories == None:
         # TODO: sleep for one second or something
         continue
 
-    print("Found directories:")
-    print(directories)
-    print("")
+    # print("Found directories:")
+    # print(directories)
+    # print("")
 
     for d in directories:
-        print("Fetching directory " + d)
+        # print("Fetching directory " + d)
         links = get_all_links(host, d)
-        print(links)
+        # print(links)
         for l in links:
             # Check if file already exists
             fname = download_dir + d + l
@@ -83,14 +82,18 @@ while(run_continuously):
 
             # Filter links
             # TODO: Check file extension against our whitelist
-            if "mp4" in l: # Skip mp4 for testing only
-                print("Skipping " + l)
+            # if "mp4" in l: # Skip mp4 for testing only
+            #     print("Skipping " + l)
+            #     continue
+            filename, file_extension = os.path.splitext(fname)
+            if file_extension[1:] not in desired_extensions:
+                print("Ignoring because of file extension: " + fname)
                 continue
 
 
             file_url = "http://" + host + d + l
 
-            print("Downloading file " + file_url + "to " + fname)
+            print("Downloading file " + file_url + " to " + fname)
 
             # TODO: Download images to specified directory 
             with urllib.request.urlopen(file_url) as response:
